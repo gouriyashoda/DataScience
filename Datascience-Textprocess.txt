@@ -1,0 +1,63 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from PIL import Image
+import matplotlib.pyplot as plt
+
+import nltk
+from nltk import word_tokenize
+from nltk.probability import FreqDist
+import urllib.request
+from wordcloud import WordCloud
+nltk.download('punkt')
+%matplotlib inline
+
+import os
+os.chdir('C:/Users/Administrator/Desktop/Data Science')
+
+novel = open('pdfcoffee.com_crooked-house-by-agatha-christie-pdf-free.txt','r').read()
+
+words = word_tokenize(novel) #checking number of words available in novel
+print(words)
+
+print(novel[502:1000]) #printing from letter 502-1000
+
+
+list_of_common=FreqDist(words)  #storing common words from the list
+list_of_common.most_common(20)
+
+only_letters = []   #for storing only alphabet values
+for word in words:
+    if word.isalpha():   #checking if the letter is alphabet
+        only_letters.append(word.lower())
+print("Count of Only letters without any punctuations:", len(only_letters))
+
+nltk.download("stopwords")
+from nltk.corpus import stopwords
+stopword_list = stopwords.words("english")
+print("StopWords:", stopword_list)  #eg: we, i, them, then, our, you are the stopwords
+
+
+cleaned_words = []   #for storing only meaningful letters
+for word in only_letters:
+    if word not in stopword_list:
+        cleaned_words.append(word)
+print("Length of only words without stopwords:", len(cleaned_words))
+print(cleaned_words)
+
+clean_common = FreqDist(cleaned_words)
+clean_common.most_common(20)   #checking of common words in cleaned words
+
+new_cleaned_words = " ".join(cleaned_words)
+cloud = WordCloud(background_color="green").generate(new_cleaned_words)
+plt.figure(figsize=(15,15))
+plt.axis('off')
+plt.imshow(cloud)
+
+or 
+new_cleaned_words=" ".join(clean_words)
+cloud=WordCloud(width=800, height=800, background_color='white', max_words=100)
+cloud.generate(new_cleaned_words)
+plt.imshow(cloud, interpolation='bilinear')
+plt.axis('off')
+plt.show()
